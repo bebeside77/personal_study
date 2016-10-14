@@ -53,19 +53,8 @@ public class LeftRightDeadlock {
 
         ExecutorService executor = Executors.newFixedThreadPool(4);
 
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                leftRightDeadlock.leftRight();
-            }
-        });
-
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                leftRightDeadlock.rightLeft();
-            }
-        });
+        executor.execute(leftRightDeadlock::leftRight);
+        executor.execute(leftRightDeadlock::rightLeft);
 
         executor.shutdown();
 
