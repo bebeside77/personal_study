@@ -24,17 +24,17 @@ public class PstmtExecute {
 //            log.error("", e);
 //        }
 
-        String url = "jdbc:oracle:thin:@10.113.164.163:1728:UMONDEV";
-        String userName = "umonivkpi";
-        String password = "umonivkpi";
+        String url = "jdbc:oracle:thin:@12.34.56.78:1728:DEV";
+        String userName = "scott";
+        String password = "tiger";
 
         ResultSet resultSet = null;
 
         try (Connection connection = DriverManager.getConnection(url, userName, password);
-             PreparedStatement pstmt = connection.prepareStatement("select * from cont_mstr_iv where user_id = ?");
+             PreparedStatement pstmt = connection.prepareStatement("select * from user where user_id = ?");
              SomeResource someResource = new SomeResource()) {
 
-            pstmt.setString(1, "nv1umon104");
+            pstmt.setString(1, "john");
 //            pstmt.setString(1, null);
 //            pstmt.setNull(1, Types.VARCHAR);
 
