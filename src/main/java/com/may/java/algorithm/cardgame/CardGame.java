@@ -46,10 +46,7 @@ public class CardGame {
     public void playTheGame() {
         Card[][] playersCards = new Card[PLAYER_NUM][CARD_NUM_PER_PLAYER];
 
-        for (int i = 0; i < PLAYER_NUM; i++) {
-            playersCards[i] = new Card[CARD_NUM_PER_PLAYER];
-        }
-
+        // 카드 52장 생성
         Card[] allCards = new Card[CARD_SORTS.length * CARD_NUM_PER_SORT];
         int k = 0;
 
@@ -59,6 +56,7 @@ public class CardGame {
             }
         }
 
+        // 플레이어들에게 7장씩 카드 랜덤하게 할당
         int l = 0;
 
         for (int j = 0; j < PLAYER_NUM; j++) {
@@ -75,8 +73,8 @@ public class CardGame {
             }
         }
 
+        // 점수 계산, 승자 선출
         int[] playerScore = new int[PLAYER_NUM];
-
         int winner = 0;
         int winnerScore = 0;
         boolean needReplay = false;
@@ -101,6 +99,7 @@ public class CardGame {
             }
         }
 
+        // 동점자 있을 경우 다시 게임 아니면 결과 출력
         if (needReplay) {
             playTheGame();
         } else {
