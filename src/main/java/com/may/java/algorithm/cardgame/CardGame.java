@@ -31,8 +31,8 @@ import java.util.Random;
  * <p>
  * 요구 사항이 모호하다면, 그 부분을 재정의하여 서술하고 구현하시오.
  * * 시간 복잡도와 메모리 이슈, 최적의 성능에 중점을 두고, 읽기 좋은 코드로 작성.
- *
- * => 시간 복잡도가 낮고 메모리를 적게 쓰며 성능이 좋은 프로그램을 목적으로 함
+ * <p>
+ * => 동점자 발생 시 4명 전부 게임 재시작함
  *
  * @author yuwook
  */
@@ -43,40 +43,69 @@ public class CardGame {
     private static final int CARD_NUM_PER_SORT = 13;
     private static final Random RANDOM = new Random();
 
-    public void playTheGame() {
-        Card[][] playersCards = new Card[PLAYER_NUM][CARD_NUM_PER_PLAYER];
+    private Card[][] playersCards = new Card[PLAYER_NUM][CARD_NUM_PER_PLAYER];
+    private Card[] allCards = new Card[CARD_SORTS.length * CARD_NUM_PER_SORT];
 
-        // 카드 52장 생성
-        Card[] allCards = new Card[CARD_SORTS.length * CARD_NUM_PER_SORT];
-        int k = 0;
+    private int[] playersScore = new int[PLAYER_NUM];
+    private int winner = -1;
+
+    public CardGame() {
+        makeAllCards();
+    }
+
+    public void playTheGame() {
+        giveCardsToPlayers();
+
+        boolean needReplay = computeResult();
+
+        // 동점자 있을 경우 다시 게임 아니면 결과 출력
+        if (needReplay) {
+            winner = -1;
+            playTheGame();
+        } else {
+            printResult();
+        }
+    }
+
+    /**
+     * 카드 52장 생성
+     */
+    private void makeAllCards() {
+        int cardIndex = 0;
 
         for (char CARD_SORT : CARD_SORTS) {
-            for (int j = 1; j <= CARD_NUM_PER_SORT; j++) {
-                allCards[k++] = new Card(CARD_SORT, j);
+            for (char i = 1; i <= CARD_NUM_PER_SORT; i++) {
+                allCards[cardIndex++] = new Card(CARD_SORT, i);
             }
         }
+    }
 
-        // 플레이어들에게 7장씩 카드 랜덤하게 할당
-        int l = 0;
+    /**
+     * 플레이어들에게 카드 랜덤하게 할당
+     */
+    private void giveCardsToPlayers() {
+        int giveCounter = 0;
 
-        for (int j = 0; j < PLAYER_NUM; j++) {
-            for (int i = 0; i < CARD_NUM_PER_PLAYER; i++) {
-                int rand = RANDOM.nextInt(allCards.length - l);
+        for (int i = 0; i < PLAYER_NUM; i++) {
+            for (int j = 0; j < CARD_NUM_PER_PLAYER; j++) {
+                int cardSelectBound = allCards.length - 1 - giveCounter;
+                int rand = RANDOM.nextInt(cardSelectBound + 1);
 
-                playersCards[j][i] = allCards[rand];
+                playersCards[i][j] = allCards[rand];
 
-                Card temp = allCards[allCards.length - 1 - l];
-                allCards[allCards.length - 1 - l] = allCards[rand];
-                allCards[rand] = temp;
+                swapCard(cardSelectBound, rand);
 
-                l++;
+                giveCounter++;
             }
         }
+    }
 
-        // 점수 계산, 승자 선출
-        int[] playerScore = new int[PLAYER_NUM];
-        int winner = 0;
-        int winnerScore = 0;
+    /**
+     * 플레이어별 점수 계산, 승자 선출
+     *
+     * @return 재경기 필요 여부
+     */
+    private boolean computeResult() {
         boolean needReplay = false;
 
         for (int i = 0; i < PLAYER_NUM; i++) {
@@ -86,35 +115,36 @@ public class CardGame {
                 sum += playersCards[i][j].getNumber();
             }
 
-            playerScore[i] = sum;
+            playersScore[i] = sum;
 
             if (i == 0) {
-                winnerScore = sum;
-            } else if (sum < winnerScore) {
+                winner = 0;
+                continue;
+            }
+
+            if (sum < playersScore[winner]) {
                 winner = i;
-                winnerScore = sum;
                 needReplay = false;
-            } else if (sum == winnerScore) {
+            } else if (sum == playersScore[winner]) {
                 needReplay = true;
             }
         }
-
-        // 동점자 있을 경우 다시 게임 아니면 결과 출력
-        if (needReplay) {
-            playTheGame();
-        } else {
-            printResult(playersCards, playerScore, winner);
-        }
+        return needReplay;
     }
 
-    private void printResult(Card[][] playersCards, int[] playerScore, int winner) {
-        int playerIndex = 0;
+    private void swapCard(int index1, int index2) {
+        Card temp = allCards[index1];
+        allCards[index1] = allCards[index2];
+        allCards[index2] = temp;
+    }
+
+    private void printResult() {
+        StringBuilder sb = new StringBuilder();
 
         for (int i = 0; i < playersCards.length; i++) {
             Card[] cards = playersCards[i];
-            StringBuilder sb = new StringBuilder();
 
-            sb.append("Player").append(++playerIndex).append(": ");
+            sb.append("Player").append(i + 1).append(": ");
 
             for (int j = 0; j < cards.length; j++) {
                 sb.append(cards[j]);
@@ -124,12 +154,11 @@ public class CardGame {
                 }
             }
 
-            sb.append(" : sum = ").append(playerScore[i]);
-
-            System.out.println(sb.toString());
+            sb.append(" : sum = ").append(playersScore[i]).append("\n");
         }
 
-        System.out.println("\nWinner : Player" + (winner + 1));
+        sb.append("\nWinner : Player").append(winner + 1);
+        System.out.println(sb.toString());
     }
 
     public static void main(String[] args) {
