@@ -1,11 +1,4 @@
-/*
- * @(#)CardGame.java  2016.11.11
- *
- * Copyright 2016 NHN Corp. All rights Reserved. 
- * NHN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- */
-
-package com.may.java.algorithm.cardgame;
+package com.may.java.algorithm;
 
 import java.util.Random;
 
@@ -32,9 +25,12 @@ import java.util.Random;
  * 요구 사항이 모호하다면, 그 부분을 재정의하여 서술하고 구현하시오.
  * * 시간 복잡도와 메모리 이슈, 최적의 성능에 중점을 두고, 읽기 좋은 코드로 작성.
  * <p>
- * => 동점자 발생 시 4명 전부 게임 재시작함
  *
- * @author yuwook
+ * [요구 사항 재정의]
+ * - 동점자 발생 시 4명 전부 게임 재시작함
+ * - 다음 순서로 중요성을 두고 작성(성능 > 메모리 > 가독성)
+ *
+ * @author bebeside77
  */
 public class CardGame {
     private static final int PLAYER_NUM = 4;
@@ -166,3 +162,33 @@ public class CardGame {
     }
 }
 
+class Card {
+    private char sort; // 카드 종류
+    private char number; // 카드 숫자
+
+    public Card(char sort, char number) {
+        this.sort = sort;
+        this.number = number;
+    }
+
+    public char getSort() {
+        return sort;
+    }
+
+    public void setSort(char sort) {
+        this.sort = sort;
+    }
+
+    public int getNumber() {
+        return number;
+    }
+
+    public void setNumber(char number) {
+        this.number = number;
+    }
+
+    @Override
+    public String toString() {
+        return sort + "" + (int) number;
+    }
+}
