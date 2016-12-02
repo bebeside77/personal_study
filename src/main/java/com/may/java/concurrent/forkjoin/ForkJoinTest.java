@@ -1,4 +1,4 @@
-package com.may.java.jdk8;
+package com.may.java.concurrent.forkjoin;
 
 import java.util.Arrays;
 import java.util.concurrent.ForkJoinPool;
