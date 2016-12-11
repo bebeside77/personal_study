@@ -13,7 +13,7 @@ package com.may.java.algorithm;
 public class PalindromeCheck {
 
     public boolean isPalindrome(String string) {
-        for (int i = 0; i < string.length(); i++) {
+        for (int i = 0; i < string.length() / 2; i++) {
             int length = string.length();
 
             if (string.charAt(i) != string.charAt(length - 1 - i)) {
