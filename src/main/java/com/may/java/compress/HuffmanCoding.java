@@ -1,7 +1,6 @@
 package com.may.java.compress;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,52 +30,59 @@ public class HuffmanCoding {
 
 		log.info("countMap : " + countMap);
 
-		List<TreeNode> treeNodeList = new ArrayList<>();
+		List<BinaryTree<TreeNode>> treeNodeList = new ArrayList<>();
 		for (Character character : countMap.keySet()) {
 			TreeNode treeNode = new TreeNode();
 			treeNode.c = character;
 			treeNode.count = countMap.get(character);
+			BinaryTree.Node<TreeNode> newNode = new BinaryTree.Node<>(treeNode);
+			BinaryTree<TreeNode> huffmanTree = new BinaryTree<>(newNode);
 
-			treeNodeList.add(treeNode);
+			treeNodeList.add(huffmanTree);
 		}
 
-		Collections.sort(treeNodeList);
-		Collections.reverse(treeNodeList);
+		while (treeNodeList.size() >= 2) {
+			treeNodeList.sort((tree1, tree2) -> {
+				TreeNode treeNode1 = tree1.getRoot().getData();
+				TreeNode treeNode2 = tree2.getRoot().getData();
+
+				return (treeNode1.count - treeNode2.count) * -1; // descending by count
+			});
+
+			log.info("treeNodeList : " + treeNodeList);
+
+			BinaryTree<TreeNode> lastNode = treeNodeList.get(treeNodeList.size() - 1);
+			BinaryTree<TreeNode> preLastNode = treeNodeList.get(treeNodeList.size() - 2);
+			int countSum = lastNode.getRoot().getData().getCount() + preLastNode.getRoot().getData().getCount();
+
+			TreeNode newTreeNode = new TreeNode();
+			newTreeNode.count = countSum;
+			BinaryTree.Node<TreeNode> newNode = new BinaryTree.Node<>(newTreeNode);
+			newNode.setLeft(new BinaryTree.Node<>(preLastNode.getRoot().getData()));
+			newNode.setRight(new BinaryTree.Node<>(lastNode.getRoot().getData()));
+
+			treeNodeList.remove(treeNodeList.size() - 1);
+			treeNodeList.remove(treeNodeList.size() - 1);
+
+			treeNodeList.add(new BinaryTree<>(newNode));
+		}
 
 		log.info("treeNodeList : " + treeNodeList);
-
-		TreeNode lastNode = treeNodeList.get(treeNodeList.size() - 1);
-		TreeNode preLastNode = treeNodeList.get(treeNodeList.size() - 2);
-		int countSum = lastNode.count + preLastNode.count;
-
-		TreeNode newTreeNode = new TreeNode();
-		newTreeNode.count = countSum;
-		BinaryTree.Node<TreeNode> newNode = new BinaryTree.Node<>(newTreeNode);
-		newNode.left = new BinaryTree.Node<>(preLastNode);
-		newNode.right = new BinaryTree.Node<>(lastNode);
-
-		BinaryTree<TreeNode> huffmanTree = new BinaryTree<>(newNode);
-
-		treeNodeList.remove(treeNodeList.size() - 1);
-		treeNodeList.remove(treeNodeList.size() - 2);
-		treeNodeList.add(newTreeNode);
 
 		return "";
 	}
 
 	@ToString
-	class TreeNode implements Comparable<TreeNode> {
-		char c;
-		int count;
+	class TreeNode {
+		private char c;
+		private int count;
 
-		@Override
-		public int compareTo(TreeNode treeNode) {
-			if (this.count > treeNode.count) {
-				return 1;
-			} else if (this.count == treeNode.count) {
-				return 0;
-			}
-			return -1;
+		public char getC() {
+			return c;
+		}
+
+		public int getCount() {
+			return count;
 		}
 	}
 

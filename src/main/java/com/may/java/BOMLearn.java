@@ -1,20 +1,13 @@
-/*
- * @(#)BOMLearn.java  2016.04.21
- *
- * Copyright 2016 NHN Corp. All rights Reserved. 
- * NHN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- */
-
 package com.may.java;
-
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
- * @author yuwook
+ * @author bebeside77
  */
 @Slf4j
 public class BOMLearn {
