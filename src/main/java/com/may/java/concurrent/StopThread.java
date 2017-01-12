@@ -28,6 +28,8 @@ public class StopThread {
             while (!stopRequested) {
                 i++;
             }
+
+            System.out.println("the end of background thread");
         });
         backgroundThread.start();
 

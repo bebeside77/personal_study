@@ -6,21 +6,26 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
  * @author bebeside77
  */
-public class FileLockTest2 {
+public class FileLockTest3 {
+	private static Set<FileLock> fileLocks = new HashSet<>();
 
 	public static void main(String[] args) {
-		File file = new File(args[0]);
+		File file = new File("D:\\data\\people.txt");
 		FileOutputStream fileOutputStream = null;
+
 		try {
 			fileOutputStream = new FileOutputStream(file);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
+
 		FileChannel channel = fileOutputStream.getChannel();
 
 		FileLock fileLock1 = null;
@@ -32,27 +37,27 @@ public class FileLockTest2 {
 
 		System.out.println("lock1 valid : " + fileLock1.isValid());
 
-		FileLock fileLock2 = null;
-		try {
-			fileLock2 = channel.tryLock();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		fileLocks.add(fileLock1);
 
-		System.out.println("lock2 valid : " + fileLock2.isValid());
-
+		Thread thread = new Thread(() -> {
+			for (FileLock fileLock : fileLocks) {
+				try {
+					fileLock.release();
+					System.out.println("release " + fileLock.toString());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		thread.start();
 		try {
-			Thread.sleep(10000);
+			thread.join();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 
-		if (fileLock1.isValid()) {
-			try {
-				fileLock1.release();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
+		System.out.println("lock1 valid : " + fileLock1.isValid());
+
 	}
+
 }
