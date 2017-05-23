@@ -28,6 +28,8 @@ public class LombokTest {
 		cat2.setColor("white");
 
 		System.out.println(cat1.equals(cat2)); // true
+		System.out.println(cat1.hashCode() == cat2.hashCode()); // true
+
 		System.out.println(cat1.toString()); // Cat(color=white)
 		System.out.println(cat2.toString()); // Cat(color=white)
 	}
