@@ -1,0 +1,41 @@
+{
+  "type": "object",
+  "properties": {
+    "contentsId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "title": {
+      "type": "string"
+    },
+    "metadata": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/metadata"
+      }
+    }
+  },
+  "required": [
+    "contentsId"
+  ],
+  "definitions": {
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "propertyName": {
+          "type": "string"
+        },
+        "propertyTitle": {
+          "type": "string"
+        },
+        "propertyContent": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "propertyName",
+        "propertyContent"
+      ]
+    }
+  }
+}
